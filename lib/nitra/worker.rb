@@ -111,6 +111,7 @@ module Nitra
             debug "Channel closed, exiting"
             exit
           elsif data['command'] == "process_file"
+            debug data
             filename = data["filename"].chomp
             process_file(filename)
           end
