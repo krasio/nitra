@@ -29,6 +29,13 @@ module Nitra
           configuration.debug = true
         end
 
+        opts.on("--minitest [PATTERN1,PATTERN2]", Array,
+                "Full minitest run, causes any files you list manually to be ignored.",
+                "Default pattern is \"test/**/*_test.rb\"."
+               ) do |patterns|
+          configuration.add_framework("minitest", patterns || ["test/**/*_test.rb"])
+        end
+
         opts.on("-p", "--print-failures", "Print failures immediately when they occur") do
           configuration.print_failures = true
         end
@@ -98,7 +105,7 @@ module Nitra
         end
       end.parse!(argv)
 
-      puts "You should use the --rspec and/or --cucumber options to run some tests." if configuration.frameworks.empty? && !configuration.slave_mode
+      puts "You should use at least one of --rspec, --cucumber or --minitest options to run some tests." if configuration.frameworks.empty? && !configuration.slave_mode
     end
   end
 end

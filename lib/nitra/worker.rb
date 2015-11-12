@@ -124,7 +124,7 @@ module Nitra
       end
 
       def preload_framework
-        debug "running empty spec/feature to make framework run its initialisation"
+        debug "running empty test/spec/feature to make framework run its initialisation"
         file = Tempfile.new("nitra")
         begin
           load_environment
@@ -151,7 +151,13 @@ module Nitra
       def connect_to_database
         if defined?(Rails)
           Nitra::RailsTooling.connect_to_database
-          debug("Connected to database #{ActiveRecord::Base.connection.current_database}")
+          current_database = case ActiveRecord::Base.connection
+                             when ActiveRecord::ConnectionAdapters::SQLite3Adapter
+                               ActiveRecord::Base.connection.instance_variable_get(:@config)[:database].split('/').last
+                             else
+                               ActiveRecord::Base.connection.current_database
+                             end
+          debug("Connected to database #{current_database}")
         end
       end
 
